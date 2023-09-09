@@ -1,0 +1,6 @@
+- Now using Readable/Appendable for UserInputHandler/GameViewers
+- OpponentImplementation is now run with a DecisionMaker (A.I.)
+- OpponentImpl will now reveal its board because we are the OpponentImplementation
+- Driver either runs a normal BattleShip game or a networked A.I. one based on given arguments
+- Ships now have/know their directions (for toJson method which was needed)
+- GameBoard setup will now try to avoid placing ships adjacent to each other and works a majority of the time

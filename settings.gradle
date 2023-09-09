@@ -1,0 +1,4 @@
+rootProject.name = 'pa04'
+include 'src:test:untitled'
+findProject(':src:test:untitled')?.name = 'untitled'
+
