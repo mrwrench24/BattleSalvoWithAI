@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cs3500.pa03.OpponentBoardTrackerTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2023-09-10T20:20:35" hostname="MacBook-Air.local" time="0.029">
+  <properties/>
+  <testcase name="testNotifyHit()" classname="cs3500.pa03.OpponentBoardTrackerTest" time="0.002"/>
+  <testcase name="testNotifyIgnoreDirections()" classname="cs3500.pa03.OpponentBoardTrackerTest" time="0.001"/>
+  <testcase name="testDeterminePriorityHorizontal()" classname="cs3500.pa03.OpponentBoardTrackerTest" time="0.003"/>
+  <testcase name="testToString()" classname="cs3500.pa03.OpponentBoardTrackerTest" time="0.005"/>
+  <testcase name="testDeterminePriorityVertical()" classname="cs3500.pa03.OpponentBoardTrackerTest" time="0.001"/>
+  <testcase name="testInitialCoverage()" classname="cs3500.pa03.OpponentBoardTrackerTest" time="0.003"/>
+  <testcase name="testModify()" classname="cs3500.pa03.OpponentBoardTrackerTest" time="0.001"/>
+  <testcase name="testGetMostImportant()" classname="cs3500.pa03.OpponentBoardTrackerTest" time="0.002"/>
+  <testcase name="testNotifyMissAround()" classname="cs3500.pa03.OpponentBoardTrackerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

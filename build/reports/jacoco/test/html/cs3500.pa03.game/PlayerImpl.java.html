@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.game</a> &gt; <span class="el_source">PlayerImpl.java</span></div><h1>PlayerImpl.java</h1><pre class="source lang-java linenums">package cs3500.pa03.game;
+
+import cs3500.pa03.controller.SalvoController;
+import cs3500.pa03.controller.UserInputHandler;
+import cs3500.pa03.model.Coord;
+import cs3500.pa03.model.ShipPiece;
+import cs3500.pa03.model.ShipType;
+import cs3500.pa03.random.Randomable;
+import cs3500.pa03.view.GameViewer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * An implementation of the Player interface for the Battleship game.
+ */
+public class PlayerImpl extends AbstractPlayer {
+  private UserInputHandler handler;
+
+  /**
+   * Builds a new Human player, input is read from given UIH.
+   *
+   * @param toReadFrom the UIH to read from
+   * @param viewer the viewer to write to
+   */
+  public PlayerImpl(UserInputHandler toReadFrom, GameViewer viewer) {
+<span class="fc" id="L27">    super(viewer);</span>
+<span class="fc" id="L28">    this.handler = toReadFrom;</span>
+<span class="fc" id="L29">  }</span>
+
+  /**
+   * Builds a new Human player, using given random. Input is read from given
+   * UIH.
+   *
+   * @param toReadFrom the UIH to read from
+   * @param viewer the viewer to write to
+   * @param rand the random to use
+   */
+  public PlayerImpl(UserInputHandler toReadFrom, GameViewer viewer, Randomable rand) {
+<span class="fc" id="L40">    super(viewer, rand);</span>
+<span class="fc" id="L41">    this.handler = toReadFrom;</span>
+<span class="fc" id="L42">  }</span>
+
+  /**
+   * Get the player's name.
+   * NOTE: This may not be important to your implementation for PA03, but it will be later
+   *
+   * @return the player's name
+   */
+  @Override
+  public String name() {
+<span class="fc" id="L52">    return &quot;Human Being&quot;;</span>
+  }
+
+  /**
+   * Given the specifications for a BattleSalvo board, return a list of ships with their locations
+   * on the board.
+   *
+   * @param height         the height of the board, range: [6, 15] inclusive
+   * @param width          the width of the board, range: [6, 15] inclusive
+   * @param specifications a map of ship type to the number of occurrences each ship should
+   *                       appear on the board
+   * @return the placements of each ship on the board
+   */
+  @Override
+  public ArrayList&lt;ShipPiece&gt; setup(int height, int width, Map&lt;ShipType, Integer&gt; specifications) {
+<span class="fc" id="L67">    ArrayList&lt;ShipPiece&gt; toReturn = super.setup(height, width, specifications);</span>
+<span class="fc" id="L68">    viewer.display(this.board.toString(true));</span>
+<span class="fc" id="L69">    return toReturn;</span>
+  }
+
+  /**
+   * Returns this player's shots on the opponent's board. The number of shots returned should
+   * equal the number of ships on this player's board that have not sunk.
+   *
+   * @return the locations of shots on the opponent's board
+   */
+  @Override
+  public List&lt;Coord&gt; takeShots() {
+<span class="fc" id="L80">    SalvoController controller = new SalvoController(board.getWidth(), board.getHeight(),</span>
+        this.handler, this.viewer);
+<span class="fc" id="L82">    return controller.runSession(board.getRemainingShips().size());</span>
+  }
+
+  /**
+   * Reports to this player what shots in their previous volley returned from takeShots()
+   * successfully hit an opponent's ship.
+   *
+   * @param shotsThatHitOpponentShips the list of shots that successfully hit the opponent's ships
+   */
+  @Override
+  public void successfulHits(List&lt;Coord&gt; shotsThatHitOpponentShips) {
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    for (Coord shot : shotsThatHitOpponentShips) {</span>
+<span class="fc" id="L94">      viewer.display(&quot;Successful Hit: &quot; + shot.toString());</span>
+<span class="fc" id="L95">    }</span>
+<span class="fc" id="L96">  }</span>
+
+  /**
+   * Given the list of shots the opponent has fired on this player's board, report which
+   * shots hit a ship on this player's board.
+   *
+   * @param opponentShotsOnBoard - the opponent's shots on this player's board
+   * @return - a filtered list of the given shots that contain all locations of shots that hit a
+   *           ship on this board
+   */
+  @Override
+  public ArrayList&lt;Coord&gt; reportDamage(List&lt;Coord&gt; opponentShotsOnBoard) {
+<span class="fc" id="L108">    ArrayList&lt;Coord&gt; hits = this.board.hitAndRespond(opponentShotsOnBoard);</span>
+<span class="fc" id="L109">    viewer.display(this.board.toString(true));</span>
+<span class="fc" id="L110">    return hits;</span>
+  }
+
+  /**
+   * Notifies the player that the game is over.
+   * Win, lose, and draw should all be supported
+   *
+   * @param result if the player has won, lost, or forced a draw
+   * @param reason the reason for the game ending
+   */
+  @Override
+  public void endGame(GameResult result, String reason) {
+<span class="nc" id="L122">    return;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

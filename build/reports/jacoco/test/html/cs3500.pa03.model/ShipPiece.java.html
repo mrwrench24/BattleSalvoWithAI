@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShipPiece.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.model</a> &gt; <span class="el_source">ShipPiece.java</span></div><h1>ShipPiece.java</h1><pre class="source lang-java linenums">package cs3500.pa03.model;
+
+import cs3500.pa03.json.ShipAdapter;
+import java.util.ArrayList;
+
+/**
+ * Represents a Ship Piece in the game of Battleship
+ */
+public class ShipPiece {
+<span class="fc" id="L10">  private ArrayList&lt;Coord&gt; locatedAt = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L11">  private ArrayList&lt;Coord&gt; hitAt = new ArrayList&lt;&gt;();</span>
+  private ShipType type;
+  private ShipDirection direction;
+
+  /**
+   * Builds a new ShipPiece that is of given ShipType.
+   *
+   * @param type - the type that this ShipPiece is.
+   * @param direction - the direction that this ShipPiece is facing.
+   */
+<span class="fc" id="L21">  public ShipPiece(ShipType type, ShipDirection direction) {</span>
+<span class="fc" id="L22">    this.type = type;</span>
+<span class="fc" id="L23">    this.direction = direction;</span>
+<span class="fc" id="L24">  }</span>
+
+  /**
+   * Updates this piece to now have a presence at given coordinate
+   *
+   * @param toAdd - the location this piece is now present at
+   */
+  public void addPresenceAt(Coord toAdd) {
+<span class="fc" id="L32">    locatedAt.add(toAdd);</span>
+<span class="fc" id="L33">  }</span>
+
+  /**
+   * Updates this piece ot now be hit at given coord.
+   *
+   * @param toAdd - the coordinate this piece should now be hit at.
+   */
+  public void addHitAt(Coord toAdd) {
+<span class="fc" id="L41">    hitAt.add(toAdd);</span>
+<span class="fc" id="L42">  }</span>
+
+
+  /**
+   * Returns appropriate abbreviation associated with this piece's type, in upper/lower case
+   * based on given boolean.
+   *
+   * @param inUppercase - whether abbreviation should be delivered in uppercase or not.
+   * @return - the appropriate abbreviation, either in uppercase or not.
+   */
+  public String abbreviate(boolean inUppercase) {
+<span class="fc" id="L53">    return this.type.abbreviate(inUppercase);</span>
+  }
+
+  /**
+   * Handles counting of a certain ShipType. If this piece is of given type and is not already
+   * seen in the given list, it will be added; otherwise, no changes take place.
+   *
+   * @param targetType  - the type the list is trying to count.
+   * @param alreadySeen - the pieces already seen by the list.
+   */
+  public void addIfNotPresent(ShipType targetType, ArrayList&lt;ShipPiece&gt; alreadySeen) {
+<span class="fc bfc" id="L64" title="All 4 branches covered.">    if (this.type.equals(targetType) &amp;&amp; !alreadySeen.contains(this)) {</span>
+<span class="fc" id="L65">      alreadySeen.add(this);</span>
+    }
+<span class="fc" id="L67">  }</span>
+
+  /**
+   * Returns whether this ship is considered sunk, meaning it has been hit at every
+   * location it has a presence at.
+   *
+   * @return - Whether this ship has sunk
+   */
+  public boolean isSunk() {
+<span class="fc bfc" id="L76" title="All 2 branches covered.">    for (Coord location : locatedAt) {</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">      if (!hitAt.contains(location)) {</span>
+<span class="fc" id="L78">        return false;</span>
+      }
+<span class="fc" id="L80">    }</span>
+
+<span class="fc" id="L82">    return true;</span>
+  }
+
+  /**
+   * Returns a ShipAdapter mimicking this ship which can be used as JSON. As part of converting
+   * to a ShipAdapter, determines the leftmost or uppermost point at which this ship is located,
+   * based on its direction.
+   *
+   * @return - A ShipAdapter mimicking this ship.
+   */
+  public ShipAdapter toJson() {
+    Coord thisStartsAt;
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">    if (this.direction.equals(ShipDirection.HORIZONTAL)) {</span>
+<span class="fc" id="L96">      int lowestColumnPresence = Integer.MAX_VALUE;</span>
+<span class="fc" id="L97">      int constantRow = this.locatedAt.get(0).y;</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">      for (Coord location : this.locatedAt) {</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (location.x &lt; lowestColumnPresence) {</span>
+<span class="fc" id="L100">          lowestColumnPresence = location.x;</span>
+        }
+<span class="fc" id="L102">      }</span>
+
+<span class="fc" id="L104">      thisStartsAt = new Coord(lowestColumnPresence, constantRow);</span>
+<span class="fc" id="L105">    } else {</span>
+<span class="fc" id="L106">      int lowestRowPresence = Integer.MAX_VALUE;</span>
+<span class="fc" id="L107">      int constantCol = this.locatedAt.get(0).x;</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">      for (Coord location : this.locatedAt) {</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (location.y &lt; lowestRowPresence) {</span>
+<span class="fc" id="L110">          lowestRowPresence = location.y;</span>
+        }
+<span class="fc" id="L112">      }</span>
+
+<span class="fc" id="L114">      thisStartsAt = new Coord(constantCol, lowestRowPresence);</span>
+    }
+
+<span class="fc" id="L117">    return new ShipAdapter(thisStartsAt, this.type.length, this.direction.toString());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

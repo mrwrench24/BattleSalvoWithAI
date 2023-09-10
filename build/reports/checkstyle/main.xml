@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="10.10.0">
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/GameResult.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/PlayerImpl.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/OpponentImpl.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/CellStatus.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/OpponentBoardTracker.java">
+<error line="17" column="24" severity="warning" message="Abbreviation in name &apos;CUTOFF_PERCENTAGE&apos; must contain no more than &apos;1&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="17" column="24" severity="warning" message="Member name &apos;CUTOFF_PERCENTAGE&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="18" column="21" severity="warning" message="Abbreviation in name &apos;DOUBLE_BOUND_PRIORITY&apos; must contain no more than &apos;1&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="18" column="21" severity="warning" message="Member name &apos;DOUBLE_BOUND_PRIORITY&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="19" column="21" severity="warning" message="Abbreviation in name &apos;SINGLE_BOUND_PRIORITY&apos; must contain no more than &apos;1&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="19" column="21" severity="warning" message="Member name &apos;SINGLE_BOUND_PRIORITY&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="21" column="21" severity="warning" message="Abbreviation in name &apos;HIT_BONUS&apos; must contain no more than &apos;1&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="21" column="21" severity="warning" message="Member name &apos;HIT_BONUS&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="22" column="24" severity="warning" message="Abbreviation in name &apos;MISS_MODIFICATION_ADJACENT&apos; must contain no more than &apos;1&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="22" column="24" severity="warning" message="Member name &apos;MISS_MODIFICATION_ADJACENT&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="23" column="21" severity="warning" message="Abbreviation in name &apos;MISS_MODIFICATION_DIAGONAL&apos; must contain no more than &apos;1&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="23" column="21" severity="warning" message="Member name &apos;MISS_MODIFICATION_DIAGONAL&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="25" column="21" severity="warning" message="Abbreviation in name &apos;IRRELEVANT_DIVERGENCE&apos; must contain no more than &apos;1&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="25" column="21" severity="warning" message="Member name &apos;IRRELEVANT_DIVERGENCE&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="27" column="21" severity="warning" message="Abbreviation in name &apos;DISTANCE_DECAY&apos; must contain no more than &apos;1&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="27" column="21" severity="warning" message="Member name &apos;DISTANCE_DECAY&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="29" column="21" severity="warning" message="Abbreviation in name &apos;ADJACENT_MISS_INFERENCE&apos; must contain no more than &apos;1&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="29" column="21" severity="warning" message="Member name &apos;ADJACENT_MISS_INFERENCE&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="30" column="21" severity="warning" message="Abbreviation in name &apos;ADJACENT_HIT_INFERENCE&apos; must contain no more than &apos;1&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="30" column="21" severity="warning" message="Member name &apos;ADJACENT_HIT_INFERENCE&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="66" severity="warning" message="Line is longer than 100 characters (found 105)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="189" column="5" severity="warning" message="&apos;method def&apos; child has incorrect indentation level 4, expected level should be 6." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="190" column="5" severity="warning" message="&apos;method def&apos; child has incorrect indentation level 4, expected level should be 6." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="191" column="5" severity="warning" message="&apos;method def&apos; child has incorrect indentation level 4, expected level should be 6." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="343" severity="warning" message="Line is longer than 100 characters (found 103)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="347" severity="warning" message="Line is longer than 100 characters (found 106)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="348" severity="warning" message="Line is longer than 100 characters (found 117)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="395" severity="warning" message="Line is longer than 100 characters (found 109)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="431" severity="warning" message="Line is longer than 100 characters (found 105)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="443" severity="warning" message="Line is longer than 100 characters (found 130)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="447" severity="warning" message="Line is longer than 100 characters (found 127)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="449" severity="warning" message="Line is longer than 100 characters (found 113)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="450" severity="warning" message="Line is longer than 100 characters (found 110)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="452" severity="warning" message="Line is longer than 100 characters (found 132)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/Driver.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/OpponentBoardCell.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/CellVisitor.java">
+<error line="8" column="5" severity="warning" message="Block comment has incorrect indentation level 4, expected is 5, indentation should be the same level as line 14." source="com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"/>
+<error line="9" severity="warning" message="Line is longer than 100 characters (found 113)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="14" column="6" severity="warning" message="&apos;method def modifier&apos; has incorrect indentation level 5, expected level should be 2." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/BattleshipGame.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/Player.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/DecisionMaker.java">
+<error line="6" column="1" severity="warning" message="Extra separation in import group before &apos;java.util.ArrayList&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.CustomImportOrderCheck"/>
+<error line="22" severity="warning" message="Line is longer than 100 characters (found 103)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="70" severity="warning" message="Line is longer than 100 characters (found 103)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/AdjacencyDirection.java">
+<error line="6" severity="warning" message="Line is longer than 100 characters (found 105)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="19" column="5" severity="warning" message="&apos;member def modifier&apos; has incorrect indentation level 4, expected level should be 2." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="19" column="17" severity="warning" message="Member name &apos;xModification&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="20" column="5" severity="warning" message="&apos;member def modifier&apos; has incorrect indentation level 4, expected level should be 2." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="20" column="17" severity="warning" message="Member name &apos;yModification&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="23" severity="warning" message="Line is longer than 100 characters (found 109)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="29" column="5" severity="warning" message="&apos;ctor def modifier&apos; has incorrect indentation level 4, expected level should be 2." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="29" column="28" severity="warning" message="Parameter name &apos;xMove&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.ParameterNameCheck"/>
+<error line="29" column="39" severity="warning" message="Parameter name &apos;yMove&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.ParameterNameCheck"/>
+<error line="30" column="9" severity="warning" message="&apos;ctor def&apos; child has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="31" column="9" severity="warning" message="&apos;ctor def&apos; child has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="32" column="5" severity="warning" message="&apos;ctor def rcurly&apos; has incorrect indentation level 4, expected level should be 2." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="35" severity="warning" message="Line is longer than 100 characters (found 108)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="36" severity="warning" message="Line is longer than 100 characters (found 111)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="41" column="5" severity="warning" message="&apos;method def modifier&apos; has incorrect indentation level 4, expected level should be 2." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="42" column="9" severity="warning" message="&apos;method def&apos; child has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="42" column="13" severity="warning" message="Local variable name &apos;xToUse&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.LocalVariableNameCheck"/>
+<error line="43" column="9" severity="warning" message="&apos;method def&apos; child has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="43" column="13" severity="warning" message="Local variable name &apos;yToUse&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.LocalVariableNameCheck"/>
+<error line="45" column="9" severity="warning" message="&apos;method def&apos; child has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<error line="46" column="5" severity="warning" message="&apos;method def rcurly&apos; has incorrect indentation level 4, expected level should be 2." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/game/AbstractPlayer.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/controller/SetupController.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/controller/ProxyDealer.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/controller/SalvoController.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/controller/UserInputHandler.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/json/JoinJson.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/json/EmptyJson.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/json/FleetJson.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/json/SetupJson.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/json/VolleyJson.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/json/MessageJson.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/json/TakeShotsJson.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/json/ReportDamageJson.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/json/JsonUtils.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/json/ShipAdapter.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/model/ShipPiece.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/model/ShipType.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/model/BattleCell.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/model/Coord.java">
+<error line="13" column="14" severity="warning" message="Member name &apos;x&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="17" column="14" severity="warning" message="Member name &apos;y&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/model/GameBoard.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/model/ShipDirection.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/view/GameViewer.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/random/Randomable.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/random/MockRandom.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/random/RandomDecorator.java">
+</file>
+<file name="/Users/jakesquatrito/Desktop/CS3500/BattleSalvoWithAI/src/main/java/cs3500/pa03/random/MockRandomFour.java">
+</file>
+</checkstyle>

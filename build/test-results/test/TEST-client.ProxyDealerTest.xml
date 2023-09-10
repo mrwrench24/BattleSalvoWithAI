@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="client.ProxyDealerTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2023-09-10T20:20:32" hostname="MacBook-Air.local" time="2.043">
+  <properties/>
+  <testcase name="testEndLose()" classname="client.ProxyDealerTest" time="1.261"/>
+  <testcase name="errorInName()" classname="client.ProxyDealerTest" time="0.022"/>
+  <testcase name="testEnd()" classname="client.ProxyDealerTest" time="0.02"/>
+  <testcase name="testSetup()" classname="client.ProxyDealerTest" time="0.235"/>
+  <testcase name="testJoin()" classname="client.ProxyDealerTest" time="0.024"/>
+  <testcase name="testSuccesfulHits()" classname="client.ProxyDealerTest" time="0.215"/>
+  <testcase name="testReportDamage()" classname="client.ProxyDealerTest" time="0.123"/>
+  <testcase name="testEndTie()" classname="client.ProxyDealerTest" time="0.012"/>
+  <testcase name="errorInrunTest()" classname="client.ProxyDealerTest" time="0.003"/>
+  <testcase name="testVolley()" classname="client.ProxyDealerTest" time="0.092"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

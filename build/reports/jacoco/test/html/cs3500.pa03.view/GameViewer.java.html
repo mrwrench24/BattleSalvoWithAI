@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameViewer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.view</a> &gt; <span class="el_source">GameViewer.java</span></div><h1>GameViewer.java</h1><pre class="source lang-java linenums">package cs3500.pa03.view;
+
+import java.io.IOException;
+
+/**
+ * Represents a viewer used when Input/Output for user is necessary. Either for setting up the
+ * game or the salvo stage.
+ */
+public class GameViewer {
+  /**
+   * The appendable to use.
+   */
+  private Appendable appendable;
+
+  /**
+   * Constructs a GameViewer with the given appendable.
+   *
+   * @param toUseAppendable - the appendable to use
+   */
+<span class="fc" id="L20">  public GameViewer(Appendable toUseAppendable) {</span>
+<span class="fc" id="L21">    this.appendable = toUseAppendable;</span>
+<span class="fc" id="L22">  }</span>
+
+  /**
+   * Tells the user they input an invalid number and should put a number between given low
+   * and high, inclusive.
+   *
+   * @param low  - the lowest number the user may input
+   * @param high - the highest number the user may input
+   */
+  public void scold(int low, int high) {
+    try {
+<span class="fc" id="L33">      appendable.append(&quot;Invalid input. Must be between &quot; + low + &quot; to &quot; + high + &quot;, inclusive.\n&quot;);</span>
+<span class="nc" id="L34">    } catch (IOException e) {</span>
+<span class="nc" id="L35">      this.issueWithAppendable(e);</span>
+<span class="fc" id="L36">    }</span>
+<span class="fc" id="L37">  }</span>
+
+  /**
+   * Instructs user to input a number between given low and high integers (inclusive) for
+   * given purpose.
+   *
+   * @param purpose - a brief description as to what the user is inputting a number for.
+   * @param low     - the lowest number the user may put in.
+   * @param high    - the highest number the user may put in.
+   */
+  public void promptInputFor(String purpose, int low, int high) {
+    try {
+<span class="fc" id="L49">      appendable.append(</span>
+          &quot;Enter a number between &quot; + low + &quot; and &quot; + high + &quot; for &quot; + purpose + &quot;: &quot;);
+<span class="nc" id="L51">    } catch (IOException e) {</span>
+<span class="nc" id="L52">      this.issueWithAppendable(e);</span>
+<span class="fc" id="L53">    }</span>
+<span class="fc" id="L54">  }</span>
+
+  /**
+   * Displays given text to the user.
+   *
+   * @param text - String to be displayed to the user
+   */
+  public void display(String text) {
+    try {
+<span class="fc" id="L63">      appendable.append(text + &quot;\n&quot;);</span>
+<span class="nc" id="L64">    } catch (IOException e) {</span>
+<span class="nc" id="L65">      this.issueWithAppendable(e);</span>
+<span class="fc" id="L66">    }</span>
+<span class="fc" id="L67">  }</span>
+
+  /**
+   * Indicates directly to the console that there is an issue with this viewer's appendable.
+   *
+   * @param e - the issue noted when trying to append to this's appendable
+   */
+  private void issueWithAppendable(IOException e) {
+<span class="nc" id="L75">    System.err.println(&quot;Problem with viewer: &quot; + e);</span>
+<span class="nc" id="L76">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

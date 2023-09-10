@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Driver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.game</a> &gt; <span class="el_source">Driver.java</span></div><h1>Driver.java</h1><pre class="source lang-java linenums">package cs3500.pa03.game;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import cs3500.pa03.controller.ProxyDealer;
+import cs3500.pa03.controller.UserInputHandler;
+import cs3500.pa03.json.FleetJson;
+import cs3500.pa03.json.ShipAdapter;
+import cs3500.pa03.model.Coord;
+import cs3500.pa03.model.ShipDirection;
+import cs3500.pa03.model.ShipPiece;
+import cs3500.pa03.model.ShipType;
+import cs3500.pa03.view.GameViewer;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.Socket;
+
+/**
+ * This is the main driver of this project.
+ */
+<span class="nc" id="L21">public class Driver {</span>
+  /**
+   * Runs a game of battleship based on given argumnets. No arguments runs a human vs ai
+   * game, two arguments runs a networked game (should be IP address and port no.), any
+   * other amount is not accepted.
+   *
+   * @param args - no command line args required
+   */
+  public static void main(String[] args) {
+<span class="fc bfc" id="L30" title="All 2 branches covered.">    if (args.length == 0) {</span>
+<span class="nc" id="L31">      runClassicGame();</span>
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">    } else if (args.length == 2) {</span>
+<span class="nc" id="L33">      runNetworkedGame(args);</span>
+    } else {
+<span class="fc" id="L35">      System.err.println(&quot;Why would you enter &quot; + args.length + &quot; arguments??&quot;);</span>
+    }
+<span class="fc" id="L37">  }</span>
+
+  /**
+   * Runs a classic game of battleship with human vs ai. Viewer goes to system out and
+   * input is read from system in.
+   */
+  private static void runClassicGame() {
+<span class="fc" id="L44">    Appendable toWriteTo = new PrintStream(System.out);</span>
+<span class="fc" id="L45">    GameViewer viewerToUse = new GameViewer(toWriteTo);</span>
+
+<span class="fc" id="L47">    Readable toReadFrom = new InputStreamReader(System.in);</span>
+<span class="fc" id="L48">    UserInputHandler handlerToUse = new UserInputHandler(toReadFrom);</span>
+
+<span class="fc" id="L50">    Player player = new PlayerImpl(handlerToUse, viewerToUse);</span>
+<span class="fc" id="L51">    Player computer = new OpponentImpl(viewerToUse);</span>
+
+<span class="fc" id="L53">    BattleshipGame game = new BattleshipGame(player, computer, handlerToUse, viewerToUse);</span>
+<span class="nc" id="L54">    game.runGame();</span>
+<span class="nc" id="L55">  }</span>
+
+  /**
+   * Runs a networked game of Battleship using given arguments which should contain first
+   * an IP address and second a port number.
+   *
+   * @param args - command line args which should be Network information to run the game.
+   */
+  private static void runNetworkedGame(String[] args) {
+<span class="nc" id="L64">    String host = args[0];</span>
+<span class="nc" id="L65">    int port = Integer.parseInt(args[1]);</span>
+
+<span class="nc" id="L67">    Appendable toWriteTo = new PrintStream(System.out);</span>
+<span class="nc" id="L68">    GameViewer viewerToUse = new GameViewer(toWriteTo);</span>
+<span class="nc" id="L69">    OpponentImpl player = new OpponentImpl(viewerToUse);</span>
+
+<span class="nc bnc" id="L71" title="All 2 branches missed.">    for (int i = 0; i &lt; 3; i++) {</span>
+      try {
+<span class="nc" id="L73">        Driver.runClient(host, port, player);</span>
+<span class="nc" id="L74">      } catch (IOException e) {</span>
+<span class="nc" id="L75">        System.err.println(&quot;We got an unexpected error! &quot; + e);</span>
+<span class="nc" id="L76">      }</span>
+    }
+
+
+<span class="nc" id="L80">  }</span>
+
+  /**
+   * This method connects to the server at the given host and port, builds a proxy referee
+   * to handle communication with the server, and sets up a client player.
+   *
+   * @param host the server host
+   * @param port the server port
+   * @throws IOException if there is a communication issue with the server
+   */
+  private static void runClient(String host, int port, OpponentImpl p)
+      throws IOException, IllegalStateException {
+<span class="nc" id="L92">    Socket server = new Socket(host, port);</span>
+<span class="nc" id="L93">    ProxyDealer proxyDealer = new ProxyDealer(server, p);</span>
+<span class="nc" id="L94">    proxyDealer.run();</span>
+<span class="nc" id="L95">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdjacencyDirection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.game</a> &gt; <span class="el_source">AdjacencyDirection.java</span></div><h1>AdjacencyDirection.java</h1><pre class="source lang-java linenums">package cs3500.pa03.game;
+
+import cs3500.pa03.model.Coord;
+
+/**
+ * Represents a direction relative to a specific cell on a board. Each AdjacencyDirection has a number of
+ * x positions and y positions that a move in that direction would be associated with.
+ */
+<span class="fc" id="L9">public enum AdjacencyDirection {</span>
+<span class="fc" id="L10">    LEFT(-1, 0),</span>
+<span class="fc" id="L11">    RIGHT(1, 0),</span>
+<span class="fc" id="L12">    UPPER(0, -1),</span>
+<span class="fc" id="L13">    LOWER(0, 1),</span>
+<span class="fc" id="L14">    UPPER_LEFT(-1, -1),</span>
+<span class="fc" id="L15">    UPPER_RIGHT(1, -1),</span>
+<span class="fc" id="L16">    LOWER_LEFT(-1, 1),</span>
+<span class="fc" id="L17">    LOWER_RIGHT(1, 1);</span>
+
+    private int xModification;
+    private int yModification;
+
+    /**
+     * An AdjacencyDirection with the determined number of x-coordinates and y-coordinates that a move in the
+     * direction is associated with.
+     *
+     * @param xMove - the number of x-coordinates a move in the direction has.
+     * @param yMove - the number of y-coordinates a move in the direction has
+     */
+<span class="fc" id="L29">    AdjacencyDirection(int xMove, int yMove) {</span>
+<span class="fc" id="L30">        this.xModification = xMove;</span>
+<span class="fc" id="L31">        this.yModification = yMove;</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Moves the given Coord one step in the direction of this AdjacencyDirection. For example, if called on
+     * direction &quot;left&quot;, and the given coord is (2, 2), returns coord of (1, 2), which is one step to the left.
+     *
+     * @param original - the original coord which we want to move one step in a certain direction
+     * @return - the given coord pushed one step in the given direction
+     */
+    public Coord moveInDirection(Coord original) {
+<span class="fc" id="L42">        int xToUse = original.x + this.xModification;</span>
+<span class="fc" id="L43">        int yToUse = original.y + this.yModification;</span>
+
+<span class="fc" id="L45">        return new Coord(xToUse, yToUse);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

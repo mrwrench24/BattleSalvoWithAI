@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OpponentBoardTracker.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.game</a> &gt; <span class="el_source">OpponentBoardTracker.java</span></div><h1>OpponentBoardTracker.java</h1><pre class="source lang-java linenums">package cs3500.pa03.game;
+
+import cs3500.pa03.model.Coord;
+import cs3500.pa03.random.Randomable;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Represents an opponent's board which we are trying to keep track of, regarding locations
+ * that we have fired at and whether they were successful or not. Contains method and information
+ * regarding shots to generate/infer spots at which there may be a ship.
+ */
+public class OpponentBoardTracker {
+  private OpponentBoardCell[][] tracker;
+  private Randomable rand;
+
+<span class="fc" id="L17">  private final double CUTOFF_PERCENTAGE = 0.35;</span>
+<span class="fc" id="L18">  private final int DOUBLE_BOUND_PRIORITY = 15;</span>
+<span class="fc" id="L19">  private final int SINGLE_BOUND_PRIORITY = 10;</span>
+
+<span class="fc" id="L21">  private final int HIT_BONUS = 60;</span>
+<span class="fc" id="L22">  private final double MISS_MODIFICATION_ADJACENT = 0.8;</span>
+<span class="fc" id="L23">  private final int MISS_MODIFICATION_DIAGONAL = 18;</span>
+
+<span class="fc" id="L25">  private final int IRRELEVANT_DIVERGENCE = 5;</span>
+
+<span class="fc" id="L27">  private final int DISTANCE_DECAY = 15;</span>
+
+<span class="fc" id="L29">  private final int ADJACENT_MISS_INFERENCE = 10;</span>
+<span class="fc" id="L30">  private final int ADJACENT_HIT_INFERENCE = 25;</span>
+
+  /**
+   * Builds a new OpponentBoardTracker of given dimensions. Used to keep track of shots fired
+   * and whether they were successful or not.
+   *
+   * @param numRows - The number of rows in the boards for the game of Battleship to track.
+   * @param numCols - The number of columns in the boards for the game of Battleship to track.
+   * @param rand    - The randomable object to use when needed.
+   */
+<span class="fc" id="L40">  public OpponentBoardTracker(int numRows, int numCols, Randomable rand) {</span>
+<span class="fc" id="L41">    tracker = new OpponentBoardCell[numRows][numCols];</span>
+<span class="fc" id="L42">    this.rand = rand;</span>
+
+<span class="fc" id="L44">    int rowsBoundaryCutoff = (int) (numRows * CUTOFF_PERCENTAGE);</span>
+<span class="fc" id="L45">    int colsBoundaryCutoff = (int) (numCols * CUTOFF_PERCENTAGE);</span>
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">    for (int row = 0; row &lt; numRows; row++) {</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">      for (int col = 0; col &lt; numCols; col++) {</span>
+<span class="fc" id="L49">        tracker[row][col] = new OpponentBoardCell(new Coord(col, row));</span>
+<span class="fc" id="L50">        this.initializeCoverage(row, col, rowsBoundaryCutoff, colsBoundaryCutoff, numRows, numCols);</span>
+      }
+    }
+<span class="fc" id="L53">  }</span>
+
+  /**
+   * Updates the cell at given Coord in this board to have the given status.
+   *
+   * @param toChange  - the Coord of the cell we want to change.
+   * @param newStatus - the status the cell has now.
+   */
+  public void modify(Coord toChange, CellStatus newStatus) {
+<span class="fc" id="L62">    tracker[toChange.y][toChange.x].setStatus(newStatus);</span>
+<span class="fc" id="L63">  }</span>
+
+  /**
+   * Updates cells around given Coord which reflects a successful hit. Determines a direction (horizontal
+   * or vertical) which should receive extra priority based on nearby cells and their status.
+   *
+   * @param justHit - the coordinate we just had a successful hit at.
+   */
+  public void notifyHitAround(Coord justHit) {
+<span class="fc" id="L72">    int row = justHit.y;</span>
+<span class="fc" id="L73">    int col = justHit.x;</span>
+
+<span class="fc" id="L75">    int verticalAmountToAdd = HIT_BONUS;</span>
+<span class="fc" id="L76">    int horizontalAmountToAdd = HIT_BONUS;</span>
+
+    // looks at information regarding cell status near this successful hit. Chooses a direction
+    // (vertical or horizontal) which receives additional priority so the model is more likely to
+    // take shots fully in one direction rather than spread it out over multiple turns.
+    // I.E. it is better to get a hit and on your next turn shoot vertically and miss and then
+    // shoot horizontally than to try both on the next turn and still have to finish it off
+    // next turn anyways.
+<span class="fc bfc" id="L84" title="All 2 branches covered.">    if (this.determinePriority(row, col)) {</span>
+<span class="fc" id="L85">      horizontalAmountToAdd = 100;</span>
+    } else {
+<span class="fc" id="L87">      verticalAmountToAdd = 100;</span>
+    }
+
+<span class="fc" id="L90">    boolean missUp = false;</span>
+<span class="fc" id="L91">    boolean missDown = false;</span>
+<span class="fc" id="L92">    boolean missLeft = false;</span>
+<span class="fc" id="L93">    boolean missRight = false;</span>
+
+    //TODO: Abstract this lol
+<span class="fc bfc" id="L96" title="All 2 branches covered.">    for (int i = 1; i &lt;= 3; i++) {</span>
+      try {
+<span class="fc" id="L98">        OpponentBoardCell cell = tracker[row][col - i];</span>
+<span class="fc bfc" id="L99" title="All 4 branches covered.">        if (missLeft || cell.getStatus().equals(CellStatus.MISS)) {</span>
+          // prevents it from happening on the next cell
+<span class="fc" id="L101">          missLeft = true;</span>
+        } else {
+<span class="fc" id="L103">          cell.modifyPriority(horizontalAmountToAdd - (i * DISTANCE_DECAY));</span>
+        }
+<span class="fc" id="L105">      } catch (IndexOutOfBoundsException e) {</span>
+        // just ignore.
+<span class="fc" id="L107">      }</span>
+      try {
+<span class="fc" id="L109">        OpponentBoardCell cell = tracker[row][col + i];</span>
+<span class="fc bfc" id="L110" title="All 4 branches covered.">        if (missRight || cell.getStatus().equals(CellStatus.MISS)) {</span>
+<span class="fc" id="L111">          missRight = true;</span>
+        } else {
+<span class="fc" id="L113">          cell.modifyPriority(horizontalAmountToAdd - (i * DISTANCE_DECAY));</span>
+        }
+<span class="fc" id="L115">      } catch (IndexOutOfBoundsException e) {</span>
+        // just ignore.
+<span class="fc" id="L117">      }</span>
+      try {
+<span class="fc" id="L119">        OpponentBoardCell cell = tracker[row - i][col];</span>
+<span class="fc bfc" id="L120" title="All 4 branches covered.">        if (missUp || cell.getStatus().equals(CellStatus.MISS)) {</span>
+<span class="fc" id="L121">          missUp = true;</span>
+        } else {
+<span class="fc" id="L123">          cell.modifyPriority(verticalAmountToAdd - (i * DISTANCE_DECAY));</span>
+        }
+<span class="fc" id="L125">      } catch (IndexOutOfBoundsException e) {</span>
+        // just ignore.
+<span class="fc" id="L127">      }</span>
+      try {
+<span class="fc" id="L129">        OpponentBoardCell cell = tracker[row + i][col];</span>
+<span class="fc bfc" id="L130" title="All 4 branches covered.">        if (missDown || cell.getStatus().equals(CellStatus.MISS)) {</span>
+<span class="fc" id="L131">          missDown = true;</span>
+        } else {
+<span class="fc" id="L133">          cell.modifyPriority(verticalAmountToAdd - (i * DISTANCE_DECAY));</span>
+        }
+<span class="fc" id="L135">      } catch (IndexOutOfBoundsException e) {</span>
+        // just ignore.
+<span class="fc" id="L137">      }</span>
+    }
+<span class="fc" id="L139">  }</span>
+
+  /**
+   * Returns true if horizontal shots should be prioritized, false if vertical should be.
+   * Looks at the board and tries to make an educated decision about which should be prioritized,
+   * if not, it randomly chooses one of the directions.
+   *
+   * @return - whether horizontal shots should be prioritized or not.
+   */
+  private boolean determinePriority(int row, int col) {
+<span class="fc" id="L149">    int horizontalScore = this.calculateHorizontalScore(row, col);</span>
+<span class="fc" id="L150">    int verticalScore = this.calculateVerticalScore(row, col);</span>
+
+<span class="fc" id="L152">    int divergence = horizontalScore - verticalScore;</span>
+
+    // if the difference is pretty small, just choose a random direction
+<span class="fc bfc" id="L155" title="All 4 branches covered.">    if (divergence &gt;= IRRELEVANT_DIVERGENCE * -1 &amp;&amp; divergence &lt;= IRRELEVANT_DIVERGENCE) {</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">      return rand.nextInt(2) == 1;</span>
+    } else {
+<span class="fc bfc" id="L158" title="All 2 branches covered.">      if (horizontalScore &gt; verticalScore) {</span>
+<span class="fc" id="L159">        return true;</span>
+      } else {
+<span class="fc" id="L161">        return false;</span>
+      }
+    }
+  }
+
+  /**
+   * Calculates a score based on cells to the left and right of the given row and column index.
+   * The score is used to determine how likely another spot with a ship is to the left or right
+   * of the given coordinate.
+   *
+   * @param row - the row index to analyze.
+   * @param col - the column index to analyze.
+   * @return - the priority score based on adjacent horizontal cells and their contents.
+   */
+  private int calculateHorizontalScore(int row, int col) {
+<span class="fc" id="L176">    Coord loc = new Coord(col, row);</span>
+
+<span class="fc" id="L178">    CellVisitor&lt;Integer&gt; modifier = (CellVisitor) toModify -&gt; {</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">      if (toModify.getStatus().equals(CellStatus.EMPTY)) {</span>
+<span class="fc" id="L180">        return ADJACENT_MISS_INFERENCE;</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">      } else if (toModify.getStatus().equals(CellStatus.HIT)) {</span>
+<span class="fc" id="L182">        return ADJACENT_HIT_INFERENCE;</span>
+      }
+
+<span class="fc" id="L185">      return 0;</span>
+    };
+
+<span class="fc" id="L188">    return this.visitInNumIncrements(loc, modifier, AdjacencyDirection.LEFT, 1)</span>
+<span class="fc" id="L189">    + this.visitInNumIncrements(loc, modifier, AdjacencyDirection.LEFT, 2)</span>
+<span class="fc" id="L190">    + this.visitInNumIncrements(loc, modifier, AdjacencyDirection.RIGHT, 1)</span>
+<span class="fc" id="L191">    + this.visitInNumIncrements(loc, modifier, AdjacencyDirection.RIGHT, 2);</span>
+  }
+
+  /**
+   * Calculates a score based on cells above and below the given row and column index.
+   * The score is used to determine how likely another spot with a ship is above or below
+   * the given coordinate.
+   *
+   * @param row - the row index to analyze.
+   * @param col - the column index to analyze.
+   * @return - the priority score based on adjacent vertical cells and their contents.
+   */
+  private int calculateVerticalScore(int row, int col) {
+<span class="fc" id="L204">    Coord loc = new Coord(col, row);</span>
+
+<span class="fc" id="L206">    CellVisitor&lt;Integer&gt; modifier = (CellVisitor) toModify -&gt; {</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">      if (toModify.getStatus().equals(CellStatus.EMPTY)) {</span>
+<span class="fc" id="L208">        return ADJACENT_MISS_INFERENCE;</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">      } else if (toModify.getStatus().equals(CellStatus.HIT)) {</span>
+<span class="fc" id="L210">        return ADJACENT_HIT_INFERENCE;</span>
+      }
+
+<span class="fc" id="L213">      return 0;</span>
+    };
+
+<span class="fc" id="L216">    return this.visitInNumIncrements(loc, modifier, AdjacencyDirection.UPPER, 1)</span>
+<span class="fc" id="L217">            + this.visitInNumIncrements(loc, modifier, AdjacencyDirection.UPPER, 2)</span>
+<span class="fc" id="L218">            + this.visitInNumIncrements(loc, modifier, AdjacencyDirection.LOWER, 1)</span>
+<span class="fc" id="L219">            + this.visitInNumIncrements(loc, modifier, AdjacencyDirection.LOWER, 2);</span>
+  }
+
+  /**
+   * Updates priority values based on information that hit at given cell was a miss.
+   * Adjacent cells have their priority decreased by a certain percentage, while diagonal
+   * cells have their priority increased modestly.
+   *
+   * @param missed - coordinate of a shot we missed.
+   */
+  public void notifyMissAround(Coord missed) {
+<span class="fc" id="L230">    CellVisitor adjacentModifier = new CellVisitor() {</span>
+      @Override
+      public Void apply(OpponentBoardCell toModify) {
+<span class="fc" id="L233">        toModify.modifyPriority((int) (-1 * MISS_MODIFICATION_ADJACENT * toModify.getPriority()));</span>
+<span class="fc" id="L234">        return null;</span>
+      }
+    };
+<span class="fc" id="L237">    this.updateAdjacent(missed, adjacentModifier);</span>
+
+<span class="fc" id="L239">    CellVisitor diagonalModifier = new CellVisitor() {</span>
+      @Override
+      public Void apply(OpponentBoardCell toModify) {
+<span class="fc" id="L242">        toModify.modifyPriority(MISS_MODIFICATION_DIAGONAL);</span>
+<span class="fc" id="L243">        return null;</span>
+      }
+    };
+<span class="fc" id="L246">    this.updateDiagonal(missed, diagonalModifier);</span>
+<span class="fc" id="L247">  }</span>
+
+  /**
+   * Initializes coverage of the given cell based on its location and the &quot;cutoff&quot; values
+   * at which a cell is in the &quot;middle&quot; or not. Cells within both boundaries are prioritized
+   * more, within one of them are prioritized somewhat more, and within neither will start
+   * with the default priority value (as designated in the OppBoardCell class itself)
+   *
+   * @param row       - the row index of the cell we are starting coverage on.
+   * @param col       - the column index of the cell we are starting coverage on.
+   * @param rowCutoff - the cutoff at which a row is either in the &quot;middle&quot; of the board
+   *                  or not.
+   * @param colCutoff - the cutoff at which a column is either in the &quot;middle&quot; of the board
+   *                  or not.
+   */
+  private void initializeCoverage(int row, int col, int rowCutoff, int colCutoff, int totalRows,
+                                  int totalCols) {
+<span class="fc bfc" id="L264" title="All 4 branches covered.">    boolean withinRows = (row &gt; rowCutoff &amp;&amp; row &lt; totalRows - rowCutoff);</span>
+<span class="fc bfc" id="L265" title="All 4 branches covered.">    boolean withinCols = (col &gt; colCutoff &amp;&amp; col &lt; totalCols - colCutoff);</span>
+
+<span class="fc bfc" id="L267" title="All 4 branches covered.">    if (withinRows &amp;&amp; withinCols) {</span>
+<span class="fc" id="L268">      tracker[row][col].modifyPriority(DOUBLE_BOUND_PRIORITY);</span>
+<span class="pc bpc" id="L269" title="1 of 4 branches missed.">    } else if (withinRows &amp;&amp; !withinCols) {</span>
+<span class="fc" id="L270">      tracker[row][col].modifyPriority(SINGLE_BOUND_PRIORITY);</span>
+<span class="pc bpc" id="L271" title="1 of 4 branches missed.">    } else if (!withinRows &amp;&amp; withinCols) {</span>
+<span class="fc" id="L272">      tracker[row][col].modifyPriority(SINGLE_BOUND_PRIORITY);</span>
+    }
+<span class="fc" id="L274">  }</span>
+
+  /**
+   * Returns cell at given index.
+   *
+   * @param row - row index of the cell desired.
+   * @param col - column index of the cell desired
+   * @return - requested cell at given indices
+   */
+  public OpponentBoardCell getCellAt(int row, int col) {
+<span class="fc" id="L284">    return this.tracker[row][col];</span>
+  }
+
+  /**
+   * The main point of this class - determines the most valuable shots to take on the opponent's
+   * board based on information that we know about it. It iterates over rows in random order to
+   * look at each cell and consider adding it to the list if it is empty.
+   *
+   * @param numWanted - the number of shots we are allowed to take.
+   * @return - the shots determined as most prudent to take.
+   */
+  public List&lt;Coord&gt; getMostImportant(int numWanted) {
+<span class="fc" id="L296">    ArrayList&lt;OpponentBoardCell&gt; highestPriority = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L297">    ArrayList&lt;Integer&gt; rowIndexes = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L299" title="All 2 branches covered.">    for (int i = 0; i &lt; tracker.length; i++) {</span>
+<span class="fc" id="L300">      rowIndexes.add(i);</span>
+    }
+
+<span class="fc bfc" id="L303" title="All 2 branches covered.">    while (!rowIndexes.isEmpty()) {</span>
+<span class="fc" id="L304">      int remainingRows = rowIndexes.size();</span>
+<span class="fc" id="L305">      int nextRowIndex = rowIndexes.remove(rand.nextInt(remainingRows));</span>
+
+<span class="fc bfc" id="L307" title="All 2 branches covered.">      for (int i = 0; i &lt; tracker[nextRowIndex].length; i++) {</span>
+<span class="fc bfc" id="L308" title="All 2 branches covered.">        if (tracker[nextRowIndex][i].getStatus().equals(CellStatus.EMPTY)) {</span>
+<span class="fc" id="L309">          this.handlePotentiallyAdding(highestPriority, tracker[nextRowIndex][i], numWanted);</span>
+        }
+      }
+<span class="fc" id="L312">    }</span>
+
+    // convert each to a coordinate
+<span class="fc" id="L315">    ArrayList&lt;Coord&gt; coordList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L316" title="All 2 branches covered.">    for (OpponentBoardCell cell : highestPriority) {</span>
+<span class="fc" id="L317">      coordList.add(cell.getCoord());</span>
+<span class="fc" id="L318">    }</span>
+<span class="fc" id="L319">    return coordList;</span>
+  }
+
+  /**
+   * Handles potentially adding given cell to the given list based on the number of cells
+   * allowed to be in the list. The cell is added no matter what if there are &quot;empty&quot; spots
+   * in the list (and it's not already in there!). Otherwise, if the list is &quot;full&quot;, it will
+   * compare itself to cells in the list. If it finds one for which it has a higher priority value
+   * than, next steps are taken: if the cells are close together, then the cell is either added
+   * (replacing the one already in the list) or not based on its priority value as a %age. If the
+   * cells are far apart (again, it has a higher priority value anyways) then it is added anyways.
+   *
+   * @param important - the list of cells we have already marked as important (to shoot at)
+   * @param toAnalyze - the cell we want to analyze and consider adding.
+   * @param numWanted - the number of cells we will want in the list at most.
+   */
+  private void handlePotentiallyAdding(ArrayList&lt;OpponentBoardCell&gt; important,
+                                       OpponentBoardCell toAnalyze, int numWanted) {
+    // start by just adding cells. we may as well take shots and the server gets mad if we
+    // don't return the correct number
+<span class="pc bpc" id="L339" title="1 of 4 branches missed.">    if (important.size() &lt; numWanted &amp;&amp; !important.contains(toAnalyze)) {</span>
+<span class="fc" id="L340">      important.add(toAnalyze);</span>
+    } else {
+<span class="fc bfc" id="L342" title="All 2 branches covered.">      for (OpponentBoardCell cellInList : important) {</span>
+        // only consider replacing Coords already in the list with ones that have a higher priority val
+<span class="fc bfc" id="L344" title="All 2 branches covered.">        if (toAnalyze.getPriority() &gt; cellInList.getPriority()</span>
+<span class="pc bpc" id="L345" title="1 of 2 branches missed.">            &amp;&amp; toAnalyze.getCoord() != cellInList.getCoord()) {</span>
+
+          // if the cell we would add is close to the one we want to replace, it becomes a little trickier
+          // for it to be added to the list. But, if it's far away, we just add it anyways to have more random spread
+<span class="fc bfc" id="L349" title="All 2 branches covered.">          if (Math.abs(toAnalyze.getCoord().x - cellInList.getCoord().y) &lt; 3</span>
+<span class="fc bfc" id="L350" title="All 2 branches covered.">              &amp;&amp; Math.abs(toAnalyze.getCoord().y - cellInList.getCoord().y) &lt; 3) {</span>
+            // the higher the priority, the higher probability we &quot;override&quot; and use this cell
+<span class="fc bfc" id="L352" title="All 2 branches covered.">            boolean addAnyways = rand.nextInt(100) &lt; toAnalyze.getPriority();</span>
+<span class="fc bfc" id="L353" title="All 2 branches covered.">            if (!addAnyways) {</span>
+<span class="fc" id="L354">              return;</span>
+            }
+          }
+<span class="fc" id="L357">          important.remove(cellInList);</span>
+<span class="fc" id="L358">          important.add(toAnalyze);</span>
+          // break the loop if we add this cell. don't compare it to the rest in the list
+<span class="fc" id="L360">          return;</span>
+        }
+<span class="fc" id="L362">      }</span>
+    }
+<span class="fc" id="L364">  }</span>
+
+  /**
+   * Returns this board as a string. Based on supplied booleans, either returns abbreviations
+   * for each cell or the priority value associated with each cell next to its contents abbreviated.
+   *
+   * @param useAbbreviations - whether to just use abbreviations.
+   * @return - this board tracker represented as a String.
+   */
+  public String toString(boolean useAbbreviations) {
+<span class="fc" id="L374">    StringBuilder result = new StringBuilder(&quot;Opponent's Board: \n&quot;);</span>
+
+<span class="fc bfc" id="L376" title="All 2 branches covered.">    for (int row = 0; row &lt; this.tracker.length; row++) {</span>
+<span class="fc" id="L377">      StringBuilder toAdd = new StringBuilder();</span>
+
+<span class="fc bfc" id="L379" title="All 2 branches covered.">      for (int col = 0; col &lt; this.tracker[0].length; col++) {</span>
+<span class="fc bfc" id="L380" title="All 2 branches covered.">        if (useAbbreviations) {</span>
+<span class="fc" id="L381">          toAdd.append(this.tracker[row][col].getStatus().abbreviate());</span>
+        } else {
+<span class="fc" id="L383">          toAdd.append(this.tracker[row][col].getPriority() + &quot; &quot; + &quot;(&quot;</span>
+<span class="fc" id="L384">              + this.tracker[row][col].getStatus().abbreviate() + &quot;) &quot;);</span>
+        }
+      }
+
+<span class="fc" id="L388">      result.append(toAdd + &quot;\n&quot;);</span>
+    }
+
+<span class="fc" id="L391">    return result.toString();</span>
+  }
+
+  /**
+   * Applies given MathModifier to cells immediately adjacent to the given Coord. Any indices/cells which are
+   * out of bounds are simply ignored.
+   *
+   * @param location - the Coord of the cell for which we want to modify adjacent cells.
+   * @param modifier - the modifier we want to apply to cells.
+   */
+  private void updateAdjacent(Coord location, CellVisitor modifier) {
+<span class="fc" id="L402">    Coord leftCoord = AdjacencyDirection.LEFT.moveInDirection(location);</span>
+<span class="fc" id="L403">    Coord rightCoord = AdjacencyDirection.RIGHT.moveInDirection(location);</span>
+<span class="fc" id="L404">    Coord upperCoord = AdjacencyDirection.UPPER.moveInDirection(location);</span>
+<span class="fc" id="L405">    Coord lowerCoord = AdjacencyDirection.LOWER.moveInDirection(location);</span>
+
+<span class="fc" id="L407">    Coord[] coordsToTry = new Coord[] {leftCoord, rightCoord, upperCoord, lowerCoord};</span>
+
+<span class="fc bfc" id="L409" title="All 2 branches covered.">    for (Coord individualCoord : coordsToTry) {</span>
+      try {
+<span class="fc" id="L411">        modifier.apply(this.getCellAt(individualCoord.y, individualCoord.x));</span>
+<span class="fc" id="L412">      } catch (IndexOutOfBoundsException e) {</span>
+        // ignore
+<span class="fc" id="L414">      }</span>
+    }
+<span class="fc" id="L416">  }</span>
+
+  /**
+   * Applies given MathModifier to cells diagonal to the given Coord. Any indices/cells which are
+   * out of bounds are simply ignored.
+   *
+   * @param location - the Coord of the cell for which we want to modify diagonal cells.
+   * @param modifier - the modifier we want to apply to cells.
+   */
+  private void updateDiagonal(Coord location, CellVisitor modifier) {
+<span class="fc" id="L426">    Coord upperLeftCoord = AdjacencyDirection.UPPER_LEFT.moveInDirection(location);</span>
+<span class="fc" id="L427">    Coord upperRightCoord = AdjacencyDirection.UPPER_RIGHT.moveInDirection(location);</span>
+<span class="fc" id="L428">    Coord lowerLeftCoord = AdjacencyDirection.LOWER_LEFT.moveInDirection(location);</span>
+<span class="fc" id="L429">    Coord lowerRightCoord = AdjacencyDirection.LOWER_RIGHT.moveInDirection(location);</span>
+
+<span class="fc" id="L431">    Coord[] coordsToTry = new Coord[] {upperLeftCoord, upperRightCoord, lowerLeftCoord, lowerRightCoord};</span>
+
+<span class="fc bfc" id="L433" title="All 2 branches covered.">    for (Coord individualCoord : coordsToTry) {</span>
+      try {
+<span class="fc" id="L435">        modifier.apply(this.getCellAt(individualCoord.y, individualCoord.x));</span>
+<span class="fc" id="L436">      } catch (IndexOutOfBoundsException e) {</span>
+        // ignore
+<span class="fc" id="L438">      }</span>
+    }
+<span class="fc" id="L440">  }</span>
+
+  /**
+   * Applies a modifier which returns an integer to a cell that is a given number of steps in a direction from the given location.
+   * Any out of bounds situations are simply ignored, 0 is returned.
+   *
+   * @param location - the original coord we want to visit a number of steps from.
+   * @param modifier - The modifier we want to apply to the cell in the direction/number of steps given, must return an integer
+   * @param direction - the direction in which we want to move from the original coord
+   * @param numIncrements - the number of steps in the given direction we want to take from the given coordinate.
+   * @return - the result of applying the modifier to the cell, or 0 if the theoretical cell was out of bounds
+   */
+  private int visitInNumIncrements(Coord location, CellVisitor&lt;Integer&gt; modifier, AdjacencyDirection direction, int numIncrements) {
+<span class="fc" id="L453">    Coord locationToCheck = location;</span>
+
+    // takes a step in direction for each given increment
+<span class="fc bfc" id="L456" title="All 2 branches covered.">    for (int i = 0; i &lt; numIncrements; i++) {</span>
+<span class="fc" id="L457">      locationToCheck = direction.moveInDirection(locationToCheck);</span>
+    }
+
+    try {
+<span class="fc" id="L461">      return modifier.apply(this.getCellAt(locationToCheck.y, locationToCheck.x));</span>
+<span class="fc" id="L462">    } catch (IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L463">      return 0;</span>
+    }
+
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

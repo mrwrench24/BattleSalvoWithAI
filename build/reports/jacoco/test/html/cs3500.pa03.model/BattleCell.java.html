@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BattleCell.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.model</a> &gt; <span class="el_source">BattleCell.java</span></div><h1>BattleCell.java</h1><pre class="source lang-java linenums">package cs3500.pa03.model;
+
+import java.util.ArrayList;
+
+/**
+ * Represents a cell on the board of the Battleship game.
+ */
+public class BattleCell {
+  private ShipPiece contents;
+  private boolean hit;
+  private Coord location;
+
+  /**
+   * Creates a new BattleCell, setting its priorityValue to -1 as a default.
+   *
+   * @param row - the row of this cell.
+   * @param col - the column of this cell.
+   */
+<span class="fc" id="L19">  public BattleCell(int row, int col) {</span>
+<span class="fc" id="L20">    contents = null;</span>
+<span class="fc" id="L21">    hit = false;</span>
+    // column = x, row = y. how many times do i have to remind you
+<span class="fc" id="L23">    location = new Coord(col, row);</span>
+<span class="fc" id="L24">  }</span>
+
+  /**
+   * Sets this cell to have given ship as its contents.
+   *
+   * @param ship - the ship that this BattleCell should contain.
+   */
+  public void setContents(ShipPiece ship) {
+<span class="fc" id="L32">    this.contents = ship;</span>
+<span class="fc" id="L33">    ship.addPresenceAt(this.location);</span>
+<span class="fc" id="L34">  }</span>
+
+  /**
+   * Returns this board represented as a String in the appropriate format for displaying an
+   * opponent's board, meaning board contents are not directly revealed.
+   *
+   * @return - this board formatted as a String like an opponent's board.
+   */
+  public String opponentToString() {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    if (this.hit) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">      if (this.contents == null) {</span>
+<span class="fc" id="L45">        return &quot;E&quot;;</span>
+      } else {
+<span class="fc" id="L47">        return &quot;X&quot;;</span>
+      }
+    } else {
+<span class="fc" id="L50">      return &quot;o&quot;;</span>
+    }
+  }
+
+  /**
+   * Returns this board represented as a String as if it belongs to the player and is their board,
+   * meaning the contents are displayed.
+   *
+   * @return - this board formatted as a String with contents visible.
+   */
+  public String playerToString() {
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (this.hit) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">      if (this.contents == null) {</span>
+<span class="fc" id="L63">        return &quot;E&quot;;</span>
+      } else {
+<span class="fc" id="L65">        return this.contents.abbreviate(true);</span>
+      }
+    } else {
+<span class="fc bfc" id="L68" title="All 2 branches covered.">      if (this.contents == null) {</span>
+<span class="fc" id="L69">        return &quot;o&quot;;</span>
+      } else {
+<span class="fc" id="L71">        return this.contents.abbreviate(false);</span>
+      }
+    }
+  }
+
+  /**
+   * Handles the process of counting a certain type of ships. If this is just an empty cell
+   * (no ship), no changes take place, otherwise, the counting process is delegated to the ship.
+   *
+   * @param targetType  - the type of ship we are trying to count
+   * @param alreadySeen - the ships we have already seen
+   */
+  public void handleCounting(ShipType targetType, ArrayList&lt;ShipPiece&gt; alreadySeen) {
+<span class="fc bfc" id="L84" title="All 2 branches covered.">    if (this.contents != null) {</span>
+<span class="fc" id="L85">      this.contents.addIfNotPresent(targetType, alreadySeen);</span>
+    }
+<span class="fc" id="L87">  }</span>
+
+  /**
+   * Runs processes associated with hitting a cell in battleship.
+   *
+   * @return - whether the hit was successful, meaning it hit a ShipPiece.
+   */
+  public boolean hitThis() {
+<span class="fc" id="L95">    this.hit = true;</span>
+
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (this.contents != null) {</span>
+<span class="fc" id="L98">      this.contents.addHitAt(this.location);</span>
+<span class="fc" id="L99">      return true;</span>
+    }
+
+<span class="fc" id="L102">    return false;</span>
+  }
+
+  /**
+   * Adds this ship to the given list if it is not already present and is not sunk
+   *
+   * @param pieces - the list of pieces we have already seen
+   */
+  public void addIfAlive(ArrayList&lt;ShipPiece&gt; pieces) {
+<span class="fc bfc" id="L111" title="All 6 branches covered.">    if (contents != null &amp;&amp; !pieces.contains(this.contents) &amp;&amp; !this.contents.isSunk()) {</span>
+<span class="fc" id="L112">      pieces.add(this.contents);</span>
+    }
+<span class="fc" id="L114">  }</span>
+
+  /**
+   * Returns true if this cell has a ship, false if not.
+   *
+   * @return - whether this cell has a ship already or not.
+   */
+  public boolean alreadyHasShip() {
+<span class="fc bfc" id="L122" title="All 2 branches covered.">    return this.contents != null;</span>
+  }
+
+  /**
+   * Returns the contents of this cell.
+   *
+   * @return - the contents of this cell.
+   */
+  public ShipPiece getShip() {
+<span class="fc" id="L131">    return this.contents;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

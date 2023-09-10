@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cs3500.pa03.GameBoardTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2023-09-10T20:20:34" hostname="MacBook-Air.local" time="0.182">
+  <properties/>
+  <testcase name="testGetWidth()" classname="cs3500.pa03.GameBoardTest" time="0.003"/>
+  <testcase name="testBuildFleet()" classname="cs3500.pa03.GameBoardTest" time="0.008"/>
+  <testcase name="testGetRemainingShips()" classname="cs3500.pa03.GameBoardTest" time="0.001"/>
+  <testcase name="testToString()" classname="cs3500.pa03.GameBoardTest" time="0.001"/>
+  <testcase name="testAddPiece()" classname="cs3500.pa03.GameBoardTest" time="0.002"/>
+  <testcase name="testHitAndRespond()" classname="cs3500.pa03.GameBoardTest" time="0.015"/>
+  <testcase name="testBuildFleetPlacement()" classname="cs3500.pa03.GameBoardTest" time="0.125"/>
+  <testcase name="testGetHeight()" classname="cs3500.pa03.GameBoardTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

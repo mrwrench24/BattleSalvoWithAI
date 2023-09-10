@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cs3500.pa03.SetupControllerTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2023-09-10T20:20:35" hostname="MacBook-Air.local" time="0.059">
+  <properties/>
+  <testcase name="testFleetInputs()" classname="cs3500.pa03.SetupControllerTest" time="0.039"/>
+  <testcase name="testSizeInputs()" classname="cs3500.pa03.SetupControllerTest" time="0.018"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

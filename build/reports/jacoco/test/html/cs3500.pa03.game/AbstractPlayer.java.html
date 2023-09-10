@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractPlayer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.game</a> &gt; <span class="el_source">AbstractPlayer.java</span></div><h1>AbstractPlayer.java</h1><pre class="source lang-java linenums">package cs3500.pa03.game;
+
+import cs3500.pa03.model.Coord;
+import cs3500.pa03.model.GameBoard;
+import cs3500.pa03.model.ShipPiece;
+import cs3500.pa03.model.ShipType;
+import cs3500.pa03.random.RandomDecorator;
+import cs3500.pa03.random.Randomable;
+import cs3500.pa03.view.GameViewer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Represents an abstract implementation of a player.
+ */
+public abstract class AbstractPlayer implements Player {
+
+  /**
+   * The random number generator for this player.
+   */
+  protected Randomable rand;
+
+  /**
+   * The viewer that this player will write to.
+   */
+  protected GameViewer viewer;
+
+  /**
+   * The board that this player is playing on.
+   */
+  protected GameBoard board;
+
+  /**
+   * Builds a new Abstract Player that will write to the given viewer
+   *
+   * @param viewer the viewer to write to
+   */
+<span class="fc" id="L39">  public AbstractPlayer(GameViewer viewer) {</span>
+<span class="fc" id="L40">    this.viewer = viewer;</span>
+<span class="fc" id="L41">    this.rand = new RandomDecorator();</span>
+<span class="fc" id="L42">  }</span>
+
+  /**
+   * Builds a new Abstract Player that will write to the given viewer and use the given random
+   * number generator.
+   *
+   * @param viewer the viewer to write to
+   * @param rand   the random number generator to use
+   */
+<span class="fc" id="L51">  public AbstractPlayer(GameViewer viewer, Randomable rand) {</span>
+<span class="fc" id="L52">    this.viewer = viewer;</span>
+<span class="fc" id="L53">    this.rand = rand;</span>
+<span class="fc" id="L54">  }</span>
+
+  /**
+   * Get the player's name.
+   * NOTE: This may not be important to your implementation for PA03, but it will be later
+   *
+   * @return the player's name
+   */
+  @Override
+  public abstract String name();
+
+  /**
+   * Given the specifications for a BattleSalvo board, return a list of ships with their locations
+   * on the board.
+   *
+   * @param height         the height of the board, range: [6, 15] inclusive
+   * @param width          the width of the board, range: [6, 15] inclusive
+   * @param specifications a map of ship type to the number of occurrences each ship should
+   *                       appear on the board
+   * @return the placements of each ship on the board
+   */
+  @Override
+  public ArrayList&lt;ShipPiece&gt; setup(int height, int width, Map&lt;ShipType, Integer&gt; specifications) {
+<span class="fc" id="L77">    this.board = new GameBoard(height, width, rand);</span>
+<span class="fc" id="L78">    this.board.buildFleet(specifications);</span>
+<span class="fc" id="L79">    return this.board.getRemainingShips();</span>
+  }
+
+  /**
+   * Returns this player's shots on the opponent's board. The number of shots returned should
+   * equal the number of ships on this player's board that have not sunk.
+   *
+   * @return the locations of shots on the opponent's board
+   */
+  @Override
+  public abstract List&lt;Coord&gt; takeShots();
+
+  /**
+   * Takes in a list of opponent's shots taken and updates board appropriately, returns a list
+   * of shots that hit a ship. Invalid indexes are ignored.
+   *
+   * @param opponentShotsOnBoard the opponent's shots on this player's board
+   * @return - list of opponent's shots which hit a ShipPiece successfully.
+   */
+  @Override
+  public abstract ArrayList&lt;Coord&gt; reportDamage(List&lt;Coord&gt; opponentShotsOnBoard);
+
+  /**
+   * Reports to this player what shots in their previous volley returned from takeShots()
+   * successfully hit an opponent's ship.
+   *
+   * @param shotsThatHitOpponentShips the list of shots that successfully hit the opponent's ships
+   */
+  @Override
+  public abstract void successfulHits(List&lt;Coord&gt; shotsThatHitOpponentShips);
+
+  /**
+   * Notifies the player that the game is over.
+   * Win, lose, and draw should all be supported
+   *
+   * @param result if the player has won, lost, or forced a draw
+   * @param reason the reason for the game ending
+   */
+  @Override
+  public void endGame(GameResult result, String reason) {
+<span class="fc" id="L119">    viewer.display(result + &quot; because &quot; + reason);</span>
+<span class="fc" id="L120">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

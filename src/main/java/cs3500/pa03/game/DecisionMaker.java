@@ -2,6 +2,7 @@ package cs3500.pa03.game;
 
 import cs3500.pa03.model.Coord;
 import cs3500.pa03.random.Randomable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,22 +13,19 @@ import java.util.List;
  */
 public class DecisionMaker {
   private OpponentBoardTracker oppBoard;
-  private Randomable rand;
 
   // temporarily holds the list of shots taken to update and then inform the board which were
   // actually misses
   private List<Coord> previousShots = new ArrayList<>();
 
   /**
-   * builds a new DecisionMaker for a game of given dimensions using given randomable when needed.
+   * builds a new DecisionMaker for a game of given dimensions using given Randomable for the opponent.
    *
    * @param numRows - the number of rows in the game
    * @param numCols - the number of columns in the game
-   * @param rand    - the randomable object to use when needed.
    */
   public DecisionMaker(int numRows, int numCols, Randomable rand) {
     this.oppBoard = new OpponentBoardTracker(numRows, numCols, rand);
-    this.rand = rand;
   }
 
   /**
@@ -69,12 +67,11 @@ public class DecisionMaker {
     // reset list so never notifying a miss twice
     previousShots = new ArrayList<>();
 
-    // does this after/separately so the 75% miss modification won't affect a successful hit.
+    // notifies hits AFTER misses so the %age decrease of a miss won't greatly affect a successful hit.
     for (Coord shot : successfulHits) {
       oppBoard.notifyHitAround(shot);
     }
 
     System.out.println(oppBoard.toString(true));
-    System.out.println(oppBoard.toString(false));
   }
 }

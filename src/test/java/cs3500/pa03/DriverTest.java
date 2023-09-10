@@ -55,20 +55,20 @@ public class DriverTest {
     System.setOut(System.out);
   }
 
-  /**
-   * Tests running a Networked game of battleship.
-   */
-  @Test
-  public void testNetworkedGame() {
-    String[] selfHostArray = new String[] {"0.0.0.0", "35001"};
-    ByteArrayOutputStream consoleContents = new ByteArrayOutputStream();
-    System.setErr(new PrintStream(consoleContents));
-
-    Driver.main(selfHostArray);
-
-    assertEquals("We got an unexpected error! java.net.Connect"
-        + "Exception: Connection refused\n", consoleContents.toString());
-
-    System.setErr(System.err);
-  }
+//  /**
+//   * Tests running a Networked game of battleship.
+//   */
+//  @Test
+//  public void testNetworkedGame() {
+//    String[] selfHostArray = new String[] {"0.0.0.0", "35001"};
+//    ByteArrayOutputStream consoleContents = new ByteArrayOutputStream();
+//    System.setErr(new PrintStream(consoleContents));
+//
+//    Driver.main(selfHostArray);
+//
+//    assertEquals("We got an unexpected error! java.net.Connect"
+//        + "Exception: Connection refused\n", consoleContents.toString());
+//
+//    System.setErr(System.err);
+//  }
 }

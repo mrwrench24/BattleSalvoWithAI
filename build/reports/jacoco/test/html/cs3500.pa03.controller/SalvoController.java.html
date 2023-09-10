@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SalvoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.controller</a> &gt; <span class="el_source">SalvoController.java</span></div><h1>SalvoController.java</h1><pre class="source lang-java linenums">package cs3500.pa03.controller;
+
+import cs3500.pa03.model.Coord;
+import cs3500.pa03.view.GameViewer;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Controls the Salvo process of prompting a HUMAN player for the shots they need to make using
+ * input.
+ */
+public class SalvoController {
+  private int playerBoardWidth;
+  private int playerBoardHeight;
+  private UserInputHandler handler;
+  private GameViewer viewer;
+
+  /**
+   * Builds a new SalvoContorller restricted by given width and height from the player.
+   *
+   * @param boardWidth  - the width of the board we are choosing shots for
+   * @param boardHeight - the height of the baord we are chooingns shots for
+   * @param handler     - the UIH to get input from
+   * @param viewer      - the viewer to display prompts to
+   */
+  public SalvoController(int boardWidth, int boardHeight, UserInputHandler handler,
+<span class="fc" id="L27">                         GameViewer viewer) {</span>
+<span class="fc" id="L28">    this.playerBoardWidth = boardWidth;</span>
+<span class="fc" id="L29">    this.playerBoardHeight = boardHeight;</span>
+<span class="fc" id="L30">    this.handler = handler;</span>
+<span class="fc" id="L31">    this.viewer = viewer;</span>
+<span class="fc" id="L32">  }</span>
+
+  /**
+   * Runs this session, getting a list of coordinates from the user from the UIH to build
+   * coords from.
+   *
+   * @param numShots - the number of shots we need to prompt the user for
+   * @return - the shots input by the user
+   */
+  public List&lt;Coord&gt; runSession(int numShots) {
+<span class="fc" id="L42">    ArrayList&lt;Coord&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L43">    viewer.display(&quot;Enter &quot; + numShots + &quot; shots.\n&quot;);</span>
+
+<span class="fc bfc" id="L45" title="All 2 branches covered.">    for (int shotNum = 1; shotNum &lt;= numShots; shotNum++) {</span>
+<span class="fc" id="L46">      int xtouse = this.getUntil(&quot;Shot &quot; + shotNum + &quot; x-coordinate&quot;, 0, playerBoardWidth - 1);</span>
+<span class="fc" id="L47">      int ytouse = this.getUntil(&quot;Shot &quot; + shotNum + &quot; y-coordinate&quot;, 0, playerBoardHeight - 1);</span>
+<span class="fc" id="L48">      result.add(new Coord(xtouse, ytouse));</span>
+    }
+
+<span class="fc" id="L51">    return result;</span>
+  }
+
+  /**
+   * Repeatedly prompts for input until receiving an integer between given low and high, inclusvie
+   *
+   * @param purpose - the reason we need input, shown to user
+   * @param low     - the lowest the input can be
+   * @param high    - the highest the input can be
+   * @return - the first valid input from the user
+   */
+  private int getUntil(String purpose, int low, int high) {
+    while (true) {
+      try {
+<span class="fc" id="L65">        viewer.promptInputFor(purpose, low, high);</span>
+<span class="fc" id="L66">        return handler.nextInput(low, high);</span>
+<span class="fc" id="L67">      } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L68">        viewer.scold(low, high);</span>
+<span class="fc" id="L69">      }</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

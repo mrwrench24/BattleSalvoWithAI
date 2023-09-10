@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cs3500.pa03.ShipPieceTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2023-09-10T20:20:35" hostname="MacBook-Air.local" time="0.01">
+  <properties/>
+  <testcase name="testHandleCounting()" classname="cs3500.pa03.ShipPieceTest" time="0.002"/>
+  <testcase name="testAbbreviate()" classname="cs3500.pa03.ShipPieceTest" time="0.001"/>
+  <testcase name="testIsSunk()" classname="cs3500.pa03.ShipPieceTest" time="0.001"/>
+  <testcase name="testToJson()" classname="cs3500.pa03.ShipPieceTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

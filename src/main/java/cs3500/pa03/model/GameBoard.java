@@ -183,7 +183,7 @@ public class GameBoard {
         return true;
       }
     } catch (IndexOutOfBoundsException e) {
-      System.out.println("Index out of bounds: " + row + ", " + col);
+
     }
     try {
       if (board[row][col + 1].alreadyHasShip()
@@ -191,7 +191,7 @@ public class GameBoard {
         return true;
       }
     } catch (IndexOutOfBoundsException e) {
-      System.out.println("Index out of bounds: " + row + ", " + col);
+
     }
     try {
       if (board[row + 1][col].alreadyHasShip()
@@ -199,7 +199,7 @@ public class GameBoard {
         return true;
       }
     } catch (IndexOutOfBoundsException e) {
-      System.out.println("Index out of bounds: " + row + ", " + col);
+
     }
     try {
       if (board[row - 1][col].alreadyHasShip()
@@ -207,7 +207,7 @@ public class GameBoard {
         return true;
       }
     } catch (IndexOutOfBoundsException e) {
-      System.out.println("Index out of bounds: " + row + ", " + col);
+
     }
 
     return false;

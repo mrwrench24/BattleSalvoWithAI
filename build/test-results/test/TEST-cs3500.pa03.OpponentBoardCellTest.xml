@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cs3500.pa03.OpponentBoardCellTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2023-09-10T20:20:35" hostname="MacBook-Air.local" time="0.008">
+  <properties/>
+  <testcase name="testModifyPriority()" classname="cs3500.pa03.OpponentBoardCellTest" time="0.001"/>
+  <testcase name="testGetPriority()" classname="cs3500.pa03.OpponentBoardCellTest" time="0.0"/>
+  <testcase name="testSetStatus()" classname="cs3500.pa03.OpponentBoardCellTest" time="0.001"/>
+  <testcase name="testGetStatus()" classname="cs3500.pa03.OpponentBoardCellTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

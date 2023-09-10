@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameBoard.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.model</a> &gt; <span class="el_source">GameBoard.java</span></div><h1>GameBoard.java</h1><pre class="source lang-java linenums">package cs3500.pa03.model;
+
+import cs3500.pa03.random.Randomable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Represents the board in a game of Battleship.
+ */
+public class GameBoard {
+  private BattleCell[][] board;
+  private Randomable rand;
+
+  /**
+   * Builds a new game board of given length and width, using the default constructor for cells
+   * for each space in the board.
+   *
+   * @param rowLength - the number of rows / length the board should be.
+   * @param colWidth  - the number of columns / width the board should be.
+   * @param rand      - the random number generator to use.
+   */
+<span class="fc" id="L23">  public GameBoard(int rowLength, int colWidth, Randomable rand) {</span>
+<span class="fc" id="L24">    this.initBoard(rowLength, colWidth);</span>
+<span class="fc" id="L25">    this.rand = rand;</span>
+<span class="fc" id="L26">  }</span>
+
+  /**
+   * Starts a new game board of given dimensions, each cell is initialized as empty/default
+   * values.
+   *
+   * @param numRows - number of rows in board to build
+   * @param numCols - number of columns in board to build
+   */
+  private void initBoard(int numRows, int numCols) {
+<span class="fc" id="L36">    this.board = new BattleCell[numRows][numCols];</span>
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">    for (int row = 0; row &lt; board.length; row++) {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">      for (int col = 0; col &lt; board[row].length; col++) {</span>
+<span class="fc" id="L40">        board[row][col] = new BattleCell(row, col);</span>
+      }
+    }
+<span class="fc" id="L43">  }</span>
+
+  /**
+   * Builds a new gameboard using given 2D array of cells as the board (for testing!).
+   *
+   * @param seededBoard - a 2D Array of cells this gameboard will reference. for testing.
+   */
+<span class="fc" id="L50">  public GameBoard(BattleCell[][] seededBoard) {</span>
+<span class="fc" id="L51">    this.board = seededBoard;</span>
+<span class="fc" id="L52">  }</span>
+
+  /**
+   * Represents this board as a String, either making its immediate contents visible (for a user)
+   * or not (for an opponent) based on given boolean value.
+   *
+   * @param visible - whether this board's contents should be made visible (meaning ships should
+   *                be displayed) or not
+   * @return - this board formatted as a String
+   */
+  public String toString(boolean visible) {
+<span class="fc" id="L63">    StringBuilder boardString = new StringBuilder();</span>
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (visible) {</span>
+<span class="fc" id="L66">      boardString.append(&quot;Your Board:\n&quot;);</span>
+    } else {
+<span class="fc" id="L68">      boardString.append(&quot;Opponent's Board:\n&quot;);</span>
+    }
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    for (int row = 0; row &lt; board.length; row++) {</span>
+<span class="fc" id="L72">      StringBuilder lineToAdd = new StringBuilder();</span>
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">      for (int col = 0; col &lt; board[row].length; col++) {</span>
+<span class="fc" id="L75">        BattleCell cell = board[row][col];</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (visible) {</span>
+<span class="fc" id="L77">          lineToAdd.append(cell.playerToString());</span>
+        } else {
+<span class="fc" id="L79">          lineToAdd.append(cell.opponentToString());</span>
+        }
+      }
+
+<span class="fc" id="L83">      lineToAdd.append(&quot;\n&quot;);</span>
+<span class="fc" id="L84">      boardString.append(lineToAdd);</span>
+    }
+
+<span class="fc" id="L87">    return boardString.toString();</span>
+  }
+
+
+  /**
+   * Hits every single Coordinate in list and returns a list of those which
+   * hit a ShipPiece. Invalid coordinates (given by opponent) are simply ignored - that's their
+   * loss!
+   *
+   * @param shots - the list of shots fired
+   * @return - the list of shots fired that hit a ship piece
+   */
+  public ArrayList&lt;Coord&gt; hitAndRespond(List&lt;Coord&gt; shots) {
+<span class="fc" id="L100">    ArrayList&lt;Coord&gt; successfulHits = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L102" title="All 2 branches covered.">    for (Coord shot : shots) {</span>
+      try {
+<span class="fc" id="L104">        BattleCell toHit = this.board[shot.y][shot.x];</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (toHit.hitThis()) {</span>
+<span class="fc" id="L106">          successfulHits.add(shot);</span>
+        }
+<span class="fc" id="L108">      } catch (IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L109">        System.out.println(&quot;Invalid shot: &quot; + shot.toString());</span>
+<span class="fc" id="L110">      }</span>
+<span class="fc" id="L111">    }</span>
+
+<span class="fc" id="L113">    return successfulHits;</span>
+  }
+
+  /**
+   * Builds a fleet of given specifications.
+   *
+   * @param specs - types of ships mapped to the number of times they should appear
+   */
+  public void buildFleet(Map&lt;ShipType, Integer&gt; specs) {
+<span class="fc" id="L122">    ShipType[] types = ShipType.values();</span>
+
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    for (int tryCount = 0; tryCount &lt; 200; tryCount++) {</span>
+      // resets the board at the beginning in case this isn't the first try
+<span class="fc" id="L126">      this.initBoard(board.length, board[0].length);</span>
+      // done in reverse order so the biggest ships are placed first
+<span class="fc bfc" id="L128" title="All 2 branches covered.">      for (int i = types.length - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L129">        ShipType currentType = types[i];</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (specs.containsKey(currentType)) {</span>
+          // if the placement is NOT successful
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">          if (!this.placeShipsOfType(currentType, specs.get(currentType))) {</span>
+            // resets the whole board placement process if caught in an impossible situation
+<span class="nc" id="L134">            this.initBoard(board.length, board[0].length);</span>
+<span class="nc" id="L135">            i = types.length;</span>
+          }
+        }
+      }
+
+      // if there aren't any ships touching each other, we can let this board be &quot;the&quot; board
+<span class="fc bfc" id="L141" title="All 2 branches covered.">      if (!this.hasAnyAdjacent()) {</span>
+<span class="fc" id="L142">        return;</span>
+      }
+    }
+
+
+<span class="fc" id="L147">  }</span>
+
+  /**
+   * Returns true if there are no cells which have a ship and are adjacent to another cell with
+   * a ship.
+   *
+   * @return - whether the ships are all at least one cell apart from each other.
+   */
+  public boolean hasAnyAdjacent() {
+<span class="fc bfc" id="L156" title="All 2 branches covered.">    for (int row = 0; row &lt; board.length; row++) {</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">      for (int col = 0; col &lt; board[row].length; col++) {</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        if (board[row][col].alreadyHasShip()) {</span>
+          // if this cell is adjacent to another ship
+<span class="fc bfc" id="L160" title="All 2 branches covered.">          if (this.checkAround(row, col, board[row][col].getShip())) {</span>
+<span class="fc" id="L161">            return true;</span>
+          }
+        }
+      }
+    }
+
+<span class="fc" id="L167">    return false;</span>
+  }
+
+  /**
+   * Returns whether any cells adjacent to given row and column values have a ship.
+   *
+   * @param row        - the row we want to check around.
+   * @param col        - the column we want to check around
+   * @param okayToHave - the ship that the cell we are checking around has, and it's okay
+   *                   if it is adjacent to it
+   * @return - whether any cells around given row and column have ships.
+   */
+  private boolean checkAround(int row, int col, ShipPiece okayToHave) {
+    try {
+<span class="fc bfc" id="L181" title="All 2 branches covered.">      if (board[row][col - 1].alreadyHasShip()</span>
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">          &amp;&amp; !board[row][col - 1].getShip().equals(okayToHave)) {</span>
+<span class="nc" id="L183">        return true;</span>
+      }
+<span class="fc" id="L185">    } catch (IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L186">      System.out.println(&quot;Index out of bounds: &quot; + row + &quot;, &quot; + col);</span>
+<span class="fc" id="L187">    }</span>
+    try {
+<span class="fc bfc" id="L189" title="All 2 branches covered.">      if (board[row][col + 1].alreadyHasShip()</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">          &amp;&amp; !board[row][col + 1].getShip().equals(okayToHave)) {</span>
+<span class="fc" id="L191">        return true;</span>
+      }
+<span class="fc" id="L193">    } catch (IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L194">      System.out.println(&quot;Index out of bounds: &quot; + row + &quot;, &quot; + col);</span>
+<span class="fc" id="L195">    }</span>
+    try {
+<span class="fc bfc" id="L197" title="All 2 branches covered.">      if (board[row + 1][col].alreadyHasShip()</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">          &amp;&amp; !board[row + 1][col].getShip().equals(okayToHave)) {</span>
+<span class="fc" id="L199">        return true;</span>
+      }
+<span class="fc" id="L201">    } catch (IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L202">      System.out.println(&quot;Index out of bounds: &quot; + row + &quot;, &quot; + col);</span>
+<span class="fc" id="L203">    }</span>
+    try {
+<span class="fc bfc" id="L205" title="All 2 branches covered.">      if (board[row - 1][col].alreadyHasShip()</span>
+<span class="pc bpc" id="L206" title="1 of 2 branches missed.">          &amp;&amp; !board[row - 1][col].getShip().equals(okayToHave)) {</span>
+<span class="nc" id="L207">        return true;</span>
+      }
+<span class="fc" id="L209">    } catch (IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L210">      System.out.println(&quot;Index out of bounds: &quot; + row + &quot;, &quot; + col);</span>
+<span class="fc" id="L211">    }</span>
+
+<span class="fc" id="L213">    return false;</span>
+  }
+
+  /**
+   * Places a certain amount of ships of the given type on this board.
+   *
+   * @param type      - the type of ship to be placed.
+   * @param numOfType - the number of given type to be placed.
+   */
+  private boolean placeShipsOfType(ShipType type, int numOfType) {
+<span class="fc bfc" id="L223" title="All 2 branches covered.">    for (int i = 0; i &lt; numOfType; i++) {</span>
+<span class="fc" id="L224">      int randomX = rand.nextInt(this.getWidth());</span>
+<span class="fc" id="L225">      int randomY = rand.nextInt(this.getHeight());</span>
+<span class="fc" id="L226">      ShipDirection[] directions = ShipDirection.values();</span>
+<span class="fc" id="L227">      ShipDirection randomDirection = directions[rand.nextInt(2)];</span>
+
+<span class="fc" id="L229">      int tryCount = 0;</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">      while (!this.validate(randomX, randomY, randomDirection, type.length)) {</span>
+<span class="fc" id="L231">        randomX = rand.nextInt(this.getWidth());</span>
+<span class="fc" id="L232">        randomY = rand.nextInt(this.getHeight());</span>
+<span class="fc" id="L233">        tryCount++;</span>
+
+        // if it tries to get a valid placement 100 times but is not successful, return false
+        // and the process will restart.
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">        if (tryCount &gt; 100) {</span>
+<span class="nc" id="L238">          return false;</span>
+        }
+      }
+
+<span class="pc bpc" id="L242" title="1 of 2 branches missed.">      if (this.validate(randomX, randomY, randomDirection, type.length)) {</span>
+<span class="fc" id="L243">        this.addPiece(type, randomDirection, new Coord(randomX, randomY));</span>
+      } else {
+<span class="nc" id="L245">        i--;</span>
+      }
+    }
+
+<span class="fc" id="L249">    return true;</span>
+  }
+
+  /**
+   * Returns whether there is enough space for a ship of hypothetical length to be placed on board
+   * at given starting x and y location in given direction. Ships cannot overlap others, ones that
+   * would would be considered invalid.
+   *
+   * @param startX    - the theoretical starting x position of the ship
+   * @param startY    - the theoretical starting y position of the ship
+   * @param direction - the direction the ship would be placed in
+   * @param length    - how long the ship would be.
+   * @return - whether a ship could be placed here and would not overlap anything.
+   */
+  private boolean validate(int startX, int startY, ShipDirection direction, int length) {
+    try {
+<span class="fc bfc" id="L265" title="All 2 branches covered.">      if (direction.equals(ShipDirection.HORIZONTAL)) {</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">        for (int i = 0; i &lt; length; i++) {</span>
+<span class="fc bfc" id="L267" title="All 2 branches covered.">          if (this.board[startY][startX + i].alreadyHasShip()) {</span>
+<span class="fc" id="L268">            return false;</span>
+          }
+        }
+      } else {
+<span class="fc bfc" id="L272" title="All 2 branches covered.">        for (int i = 0; i &lt; length; i++) {</span>
+<span class="fc bfc" id="L273" title="All 2 branches covered.">          if (this.board[startY + i][startX].alreadyHasShip()) {</span>
+<span class="fc" id="L274">            return false;</span>
+          }
+        }
+      }
+
+<span class="fc" id="L279">      return true;</span>
+<span class="fc" id="L280">    } catch (IndexOutOfBoundsException e) {</span>
+<span class="fc" id="L281">      return false;</span>
+    }
+  }
+
+  /**
+   * Creates a new piece of given type at given coordinate on the board in the given
+   * direction.
+   *
+   * @param type      - the type of ship we want to add to the board
+   * @param direction - the direction we want the ship to be placed in
+   * @param startAt   - where the ship should start from.
+   */
+  public void addPiece(ShipType type, ShipDirection direction, Coord startAt) {
+<span class="fc" id="L294">    ShipPiece toAdd = new ShipPiece(type, direction);</span>
+
+<span class="fc bfc" id="L296" title="All 2 branches covered.">    if (direction.equals(ShipDirection.HORIZONTAL)) {</span>
+<span class="fc bfc" id="L297" title="All 2 branches covered.">      for (int i = 0; i &lt; type.length; i++) {</span>
+        // set contents updates the piece's coordinates as well.
+<span class="fc" id="L299">        board[startAt.y][startAt.x + i].setContents(toAdd);</span>
+      }
+    } else {
+<span class="fc bfc" id="L302" title="All 2 branches covered.">      for (int i = 0; i &lt; type.length; i++) {</span>
+<span class="fc" id="L303">        board[startAt.y + i][startAt.x].setContents(toAdd);</span>
+      }
+    }
+<span class="fc" id="L306">  }</span>
+
+  /**
+   * returns this board's width
+   *
+   * @return - this board's width
+   */
+  public int getWidth() {
+<span class="fc" id="L314">    return this.board[0].length;</span>
+  }
+
+  /**
+   * Returns this board's height
+   *
+   * @return - this board's height
+   */
+  public int getHeight() {
+<span class="fc" id="L323">    return this.board.length;</span>
+  }
+
+  /**
+   * Counts the number of remaining, non-sunk ships on the board
+   *
+   * @return - the number of remaining, non-sunk ships on the board
+   */
+  public ArrayList&lt;ShipPiece&gt; getRemainingShips() {
+<span class="fc" id="L332">    ArrayList&lt;ShipPiece&gt; remainingShips = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L334" title="All 2 branches covered.">    for (BattleCell[] row : this.board) {</span>
+<span class="fc bfc" id="L335" title="All 2 branches covered.">      for (BattleCell cell : row) {</span>
+<span class="fc" id="L336">        cell.addIfAlive(remainingShips);</span>
+      }
+    }
+
+<span class="fc" id="L340">    return remainingShips;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

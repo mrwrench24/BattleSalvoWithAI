@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SetupController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pa04</a> &gt; <a href="index.source.html" class="el_package">cs3500.pa03.controller</a> &gt; <span class="el_source">SetupController.java</span></div><h1>SetupController.java</h1><pre class="source lang-java linenums">package cs3500.pa03.controller;
+
+import cs3500.pa03.game.Player;
+import cs3500.pa03.model.ShipType;
+import cs3500.pa03.view.GameViewer;
+import java.util.HashMap;
+
+/**
+ * Represents a controller used in setting up the game of Battleship (asking for board size,
+ * fleet size, etc).
+ */
+public class SetupController {
+  Player player1;
+  Player player2;
+
+  UserInputHandler handler;
+  GameViewer viewer;
+
+<span class="fc" id="L19">  final int minDimension = 6;</span>
+<span class="fc" id="L20">  final int maxDimension = 15;</span>
+
+  /**
+   * Builds a new SetupController that prompts input from the default UIH and ultimately calls
+   * setup using validated input on the given Players.
+   *
+   * @param player1 - The player to have their board setup by this controller's prompted input
+   * @param player2 - The player to have their board setup by this controller's prompted input
+   * @param viewer - The viewer to display messages to
+   * @param handler - The UIH to prompt input from
+   */
+  public SetupController(Player player1, Player player2,
+<span class="fc" id="L32">                         UserInputHandler handler, GameViewer viewer) {</span>
+<span class="fc" id="L33">    this.player1 = player1;</span>
+<span class="fc" id="L34">    this.player2 = player2;</span>
+<span class="fc" id="L35">    this.handler = handler;</span>
+<span class="fc" id="L36">    this.viewer = viewer;</span>
+<span class="fc" id="L37">  }</span>
+
+  /**
+   * Runs setup for a game of Battleship. Prompts UIH for board length, board width, then repeatedly
+   * prompts shipTypes one by one and starts fleet building over if too many ships are entered.
+   * Using given input, setup is then called on both players.
+   */
+  public void runSession() {
+<span class="fc" id="L45">    viewer.display(&quot;Welcome to BattleSalvo. Let's get setup.&quot;);</span>
+
+<span class="fc" id="L47">    int chosenHeight = this.getUntil(&quot;Board Length&quot;, minDimension, maxDimension);</span>
+<span class="fc" id="L48">    int chosenWidth = this.getUntil(&quot;Board Width&quot;, minDimension, maxDimension);</span>
+
+<span class="fc" id="L50">    HashMap&lt;ShipType, Integer&gt; fleetSpecs = this.promptFleet(Math.min(chosenWidth, chosenHeight));</span>
+
+<span class="fc" id="L52">    player1.setup(chosenHeight, chosenWidth, fleetSpecs);</span>
+<span class="fc" id="L53">    player2.setup(chosenHeight, chosenWidth, fleetSpecs);</span>
+<span class="fc" id="L54">  }</span>
+
+
+  /**
+   * Prompts the user to build a fleet up to given size.
+   *
+   * @param maxSize - the max number of ships the fleet may contain.
+   */
+  private HashMap&lt;ShipType, Integer&gt; promptFleet(int maxSize) {
+    while (true) {
+<span class="fc" id="L64">      HashMap&lt;ShipType, Integer&gt; fleet = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L65">      viewer.display(&quot;Your fleet may have up to &quot; + maxSize + &quot; ships.&quot;);</span>
+<span class="fc" id="L66">      int totalShipsEntered = 0;</span>
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">      for (ShipType ship : ShipType.values()) {</span>
+<span class="fc" id="L69">        int numOfType = this.getUntil(ship.toString(), 1, maxSize);</span>
+<span class="fc" id="L70">        fleet.put(ship, numOfType);</span>
+<span class="fc" id="L71">        totalShipsEntered += numOfType;</span>
+      }
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">      if (totalShipsEntered &lt;= maxSize) {</span>
+        // only way it exits the loop!
+<span class="fc" id="L76">        return fleet;</span>
+      } else {
+<span class="fc" id="L78">        viewer.display(totalShipsEntered + &quot; exceeds &quot; + maxSize);</span>
+      }
+<span class="fc" id="L80">    }</span>
+  }
+
+  /**
+   * Repeatedly prompts for input until receiving an integer between given low and high, inclusvie
+   *
+   * @param purpose - the reason we need input, shown to user
+   * @param low     - the lowest the input can be
+   * @param high    - the highest the input can be
+   * @return - the first valid input from the user
+   */
+  private int getUntil(String purpose, int low, int high) {
+    while (true) {
+      try {
+<span class="fc" id="L94">        viewer.promptInputFor(purpose, low, high);</span>
+<span class="fc" id="L95">        return handler.nextInput(low, high);</span>
+<span class="fc" id="L96">      } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L97">        viewer.scold(low, high);</span>
+<span class="fc" id="L98">      }</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
